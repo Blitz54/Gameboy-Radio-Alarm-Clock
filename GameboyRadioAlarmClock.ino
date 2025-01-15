@@ -182,8 +182,8 @@ void PrintAlarmPage()
   tft.fillRect(15, 105, 249, 4, DCOLOR);
   tft.fillRect(15, 125, 249, 4, DCOLOR);
   tft.fillRect(15, 165, 249, 4, DCOLOR);
-  tft.fillRect(15, 105, 4, 60, DCOLOR);    
-  tft.fillRect(50, 105, 4, 60, DCOLOR);  
+  tft.fillRect(15, 105, 4, 60, DCOLOR);
+  tft.fillRect(50, 105, 4, 60, DCOLOR);
   tft.fillRect(85, 105, 4, 60, DCOLOR);
   tft.fillRect(120, 105, 4, 60, DCOLOR);
   tft.fillRect(155, 105, 4, 60, DCOLOR);
@@ -294,7 +294,6 @@ void AlarmSettingsOption2()
   if (butA.isPressed())
   {
     tft.fillRect(0, 170, 320, 20, LCOLOR);
-    Serial.println("BUTA PRESSED");
     AlarmDays[selectedweekday] = '1';
     tft.fillRect(25 + (selectedweekday*35), 115, 20, 10, DCOLOR);    
     selectedweekday++;
@@ -320,16 +319,17 @@ void AlarmSettingsOption2()
       file = LittleFS.open("/AlarmTime.txt");
       fulldigits = file.readString();
       file.close();
+      NavBeep();
     }
     else
     {
       tft.fillTriangle((35*selectedweekday+25), 185, (35*selectedweekday+35), 175, (35*selectedweekday+45), 185, DCOLOR);
+      NavBeep();
     }  
   }
   if (butB.isPressed())
   {
-    tft.fillRect(0, 170, 320, 20, LCOLOR);    
-    Serial.println("BUTB PRESSED");    
+    tft.fillRect(0, 170, 320, 20, LCOLOR);     
     AlarmDays[selectedweekday] = '0';
     tft.fillRect(25 + (selectedweekday*35), 115, 20, 10, LCOLOR);    
     selectedweekday++;
@@ -353,10 +353,12 @@ void AlarmSettingsOption2()
       file = LittleFS.open("/AlarmTime.txt");
       fulldigits = file.readString();
       file.close();      
+      NavBeep();
     }
     else
     {
       tft.fillTriangle((35*selectedweekday+25), 185, (35*selectedweekday+35), 175, (35*selectedweekday+45), 185, DCOLOR);
+      NavBeep();
     }
   }  
 }
@@ -597,6 +599,7 @@ void LoopingButtonsCode(void * pvParameters){
     { 
       dac1.disable();
       DrawPage();
+      NavBeep();
     }
   }
 }
@@ -623,6 +626,7 @@ void AlarmPageCode(void * pvParameters){
             //run separate functions so it's not so messy maybe
             tft.fillTriangle(25, 185, 35, 175, 45, 185, DCOLOR);
             CurrentAlarmOption = 2;
+            NavBeep();
           }
       break;
       case 2:
@@ -686,8 +690,9 @@ void AlarmPlayingPageCode(void * pvParameters){
     if (startedalarm == 1)
     {
       startedalarm = 0;
-      dac1.outputCW(3000); //MAKES NOISE
+      dac1.enable();
       dac1.setCwScale(DAC_COSINE_ATTEN_DB_18);   // 1/2 amplitude (-6dB)
+      dac1.outputCW(3000); //MAKES NOISE
       xSemaphoreTake(LCDMutex, portMAX_DELAY);  
       tft.fillScreen(LCOLOR);
       tft.setTextDatum(MC_DATUM);

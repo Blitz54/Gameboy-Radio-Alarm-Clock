@@ -4,6 +4,8 @@
 #include "Free_Fonts.h" // Include the header file attached to this sketch
 #include <RTClib.h>
 #include <LittleFS.h>
+#include "DacESP32.h"
+
 
 extern RTC_DS3231 rtc;
 extern TFT_eSPI tft;
@@ -12,6 +14,7 @@ extern int DCOLOR;
 extern fs::File file;
 extern const uint16_t ColorPairs[][2];
 extern int oldday;
+extern DacESP32 dac1;
 
 const char daysOfWeek [7][12] = {
   "Sunday",
@@ -49,6 +52,15 @@ void LoadColor()
   Serial.println(LCOLOR);
   Serial.println(DCOLOR);
   file.close();
+}
+
+void NavBeep()
+{ 
+  dac1.enable();
+  dac1.setCwScale(DAC_COSINE_ATTEN_DB_18);  // 1/8 amplitude (-18dB)
+  dac1.outputCW(2000); //MAKES NOISE
+  delay(20);
+  dac1.disable();
 }
 
 void readFile(fs::FS &fs, const char *path)
