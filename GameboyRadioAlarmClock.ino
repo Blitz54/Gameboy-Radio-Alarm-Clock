@@ -92,7 +92,7 @@ void DrawPage()
 {
   if (pagetime+600 <= millis())
     {
-      if (CurrentPage >= 3)
+      if (CurrentPage >= 3) //INT_MonthsIndex1 = (INT_MonthsIndex1 + 11) % 12; maybe do the modulo thing here??? CurrentPage = ((CurrentPage + 1) % 3) We will need to make page 0 a thing tho, like alarm page 0
         {
           CurrentPage = 1;
         }
